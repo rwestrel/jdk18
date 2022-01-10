@@ -1059,6 +1059,12 @@ bool PhaseIdealLoop::create_loop_nest(IdealLoopTree* loop, Node_List &old_new) {
   inner_head->mark_loop_nest_inner_loop();
   outer_head->mark_loop_nest_outer_loop();
 
+  if (iters_limit == phi_t->hi_as_long() - phi_t->lo_as_long()) {
+    Node* zero = _igvn.intcon(0);
+    set_ctrl(zero, C->root());
+    _igvn.replace_input_of(outer_exit_test, 1, zero);
+  }
+
   return true;
 }
 
